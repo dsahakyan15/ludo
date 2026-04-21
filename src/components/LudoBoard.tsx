@@ -15,20 +15,10 @@ interface LudoBoardProps {
   pieces: Piece[];
   turn: Team;
   dice: number | null;
-  rolling: boolean;
   movingPiece: MovingPiece | null;
   canMove: (piece: Piece, value: number) => boolean;
-  winners: Team[];
   onMovePiece: (piece: Piece) => void;
-  onRollDice: () => void;
 }
-
-const DICE_POSITION_CLASS: Record<Team, string> = {
-  green: 'dice-pod-top dice-pod-left',
-  red: 'dice-pod-top dice-pod-right',
-  yellow: 'dice-pod-bottom dice-pod-right',
-  blue: 'dice-pod-bottom dice-pod-left',
-};
 
 function renderCell(r: number, c: number) {
   let className = 'cell';
@@ -62,12 +52,9 @@ export function LudoBoard({
   pieces,
   turn,
   dice,
-  rolling,
   movingPiece,
   canMove,
-  winners,
   onMovePiece,
-  onRollDice,
 }: LudoBoardProps) {
   const grid = [
     ...TEAMS.map((team) => (
@@ -89,15 +76,6 @@ export function LudoBoard({
   return (
     <div className="board">
       {grid}
-      <div className={`dice-pod ${DICE_POSITION_CLASS[turn]}`}>
-        <div className="dice-section">
-          <div className={`dice ${rolling ? 'rolling' : ''}`} onClick={onRollDice}>
-            {dice || '?'}
-          </div>
-          {dice === 6 && <div className="extra-roll">Extra Roll!</div>}
-          {winners.includes(turn) && <div className="dice-note">Finished</div>}
-        </div>
-      </div>
       {pieces.map((piece) => {
         const isInBase = piece.pos === null;
         const coords = piece.pos === null ? BASE_COORDS[piece.team][piece.id - 1] : PLAYER_PATHS[piece.team][piece.pos];

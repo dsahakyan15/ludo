@@ -1,6 +1,6 @@
 import './App.css';
+import { GameArea } from './components/GameArea';
 import { GameInfo } from './components/GameInfo';
-import { LudoBoard } from './components/LudoBoard';
 import { useLudoGame } from './game/useLudoGame';
 import type { Team } from './game/types';
 import { useState } from 'react';
@@ -41,7 +41,7 @@ function App() {
         winners={game.winners}
         onRestart={() => setPlayerCount(null)}
       />
-      <LudoBoard
+      <GameArea
         activeTeams={activeTeams}
         pieces={game.pieces}
         turn={game.turn}
@@ -49,7 +49,6 @@ function App() {
         rolling={game.rolling}
         movingPiece={game.movingPiece}
         canMove={game.canMove}
-        winners={game.winners}
         onMovePiece={game.movePiece}
         onRollDice={game.rollDice}
       />
