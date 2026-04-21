@@ -1,0 +1,241 @@
+:root {
+  --green: #4caf50;
+  --red: #f44336;
+  --yellow: #ffeb3b;
+  --blue: #2196f3;
+  --cell-size: 40px;
+  --bg-color: #1a237e;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
+}
+
+.ludo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(15, var(--cell-size));
+  grid-template-rows: repeat(15, var(--cell-size));
+  background-color: white;
+  border: 10px solid #3f51b5;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.green-base { background-color: var(--green); }
+.red-base { background-color: var(--red); }
+.yellow-base { background-color: var(--yellow); }
+.blue-base { background-color: var(--blue); }
+
+/* .green-cell { background-color: rgba(76, 175, 80, 0.2); }
+.red-cell { background-color: rgba(244, 67, 54, 0.2); }
+.yellow-cell { background-color: rgba(255, 235, 59, 0.2); }
+.blue-cell { background-color: rgba(33, 150, 243, 0.2); } */
+
+
+.green-cell { background-color: var(--green); }
+.red-cell { background-color: var(--red); }
+.yellow-cell { background-color: var(--yellow); }
+.blue-cell { background-color: var(--blue); }
+
+.cell.green-cell.start-cell { background-color: var(--green); border: 2px solid white; }
+.cell.red-cell.start-cell { background-color: var(--red); border: 2px solid white; }
+.cell.yellow-cell.start-cell { background-color: var(--yellow); border: 2px solid white; }
+.cell.blue-cell.start-cell { background-color: var(--blue); border: 2px solid white; }
+
+.green-base::after, .red-base::after, .yellow-base::after, .blue-base::after {
+  content: '';
+  position: absolute;
+  width: 80%;
+  height: 80%;
+  background-color: white;
+  border-radius: 10px;
+  z-index: 0;
+}
+
+.piece {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.8);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  z-index: 5;
+  cursor: default;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: absolute;
+}
+
+.piece.green { background-color: var(--green); }
+.piece.red { background-color: var(--red); }
+.piece.yellow { background-color: var(--yellow); }
+.piece.blue { background-color: var(--blue); }
+
+.piece.clickable {
+  cursor: pointer;
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+  to { transform: scale(1.1); box-shadow: 0 6px 12px rgba(255,255,255,0.5); }
+}
+
+.home-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(var(--cell-size) * 3);
+  height: calc(var(--cell-size) * 3);
+  z-index: 1;
+  pointer-events: none;
+  /* display: flex;
+  flex-wrap: wrap;
+  overflow: hidden; */
+}
+
+.tri {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+}
+
+.green-tri {
+  border-width: calc(var(--cell-size) * 1.5) 0 calc(var(--cell-size) * 1.5) calc(var(--cell-size) * 1.5);
+  border-color: transparent transparent transparent var(--green);
+  left: 0;
+}
+
+.red-tri {
+  border-width: calc(var(--cell-size) * 1.5) calc(var(--cell-size) * 1.5) 0 calc(var(--cell-size) * 1.5);
+  border-color: var(--red) transparent transparent transparent;
+  top: 0;
+}
+
+.yellow-tri {
+  border-width: calc(var(--cell-size) * 1.5) calc(var(--cell-size) * 1.5) calc(var(--cell-size) * 1.5) 0;
+  border-color: transparent var(--yellow) transparent transparent;
+  right: 0;
+}
+
+.blue-tri {
+  border-width: 0 calc(var(--cell-size) * 1.5) calc(var(--cell-size) * 1.5) calc(var(--cell-size) * 1.5);
+  border-color: transparent transparent var(--blue) transparent;
+  bottom: 0;
+}
+
+.game-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  background: rgba(255,255,255,0.1);
+  padding: 15px 25px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+}
+
+.turn-indicator {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 8px 15px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.turn-indicator.green { background-color: var(--green); }
+.turn-indicator.red { background-color: var(--red); }
+.turn-indicator.yellow { background-color: var(--yellow); color: #333; }
+.turn-indicator.blue { background-color: var(--blue); }
+
+.dice-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.dice {
+  width: 50px;
+  height: 50px;
+  background: white;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: transform 0.1s;
+}
+
+.dice:active { transform: translateY(2px); }
+
+.dice.rolling {
+  animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10.00% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20.00% { transform: translate(-3px, 0px) rotate(1deg); }
+  30.00% { transform: translate(3px, 2px) rotate(0deg); }
+  40.00% { transform: translate(1px, -1px) rotate(1deg); }
+  50.00% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60.00% { transform: translate(-3px, 1px) rotate(0deg); }
+  70.00% { transform: translate(3px, 1px) rotate(-1deg); }
+  80.00% { transform: translate(-1px, -1px) rotate(1deg); }
+  90.00% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.star {
+  font-size: 20px;
+  color: rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+
+.winners {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.9);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  z-index: 100;
+  border: 2px solid gold;
+  box-shadow: 0 0 50px rgba(255,215,0,0.5);
+}
