@@ -5,6 +5,7 @@ interface PlayerProfileProps {
   team: Team;
   active: boolean;
   currentTurn: boolean;
+  turnTimerCycle: number;
   dice: number | null;
   rolling: boolean;
   onRollDice: () => void;
@@ -28,13 +29,14 @@ export function PlayerProfile({
   team,
   active,
   currentTurn,
+  turnTimerCycle,
   dice,
   rolling,
   onRollDice,
 }: PlayerProfileProps) {
   return (
     <div className={`player-profile-group ${team} ${currentTurn ? 'current-turn' : ''} ${active ? '' : 'inactive'}`.trim()}>
-      <div className="player-profile-card">
+      <div key={`${team}-${currentTurn ? turnTimerCycle : 'idle'}`} className="player-profile-card">
         <div className="player-avatar-shell">
           <div className="player-avatar">{TEAM_NAMES[team].slice(0, 1)}</div>
         </div>

@@ -3,16 +3,18 @@ import type { Team } from '../game/types';
 interface GameInfoProps {
   playerCount: 2 | 4;
   turn: Team;
+  turnTimeLeft: number;
   winners: Team[];
   onRestart: () => void;
 }
 
-export function GameInfo({ playerCount, turn, winners, onRestart }: GameInfoProps) {
+export function GameInfo({ playerCount, turn, turnTimeLeft, winners, onRestart }: GameInfoProps) {
   return (
     <div className="game-info">
       <div>
-        <div className={`turn-indicator ${turn}`}>
-          Turn: {turn.toUpperCase()}
+        <div className="turn-summary">
+          <div className={`turn-indicator ${turn}`}>Turn: {turn.toUpperCase()}</div>
+          <div className="turn-timer">Timer: {turnTimeLeft}s</div>
         </div>
         <div className="player-count-label">{playerCount} Players</div>
       </div>

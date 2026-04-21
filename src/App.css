@@ -113,6 +113,13 @@ body {
   font-size: 0.9rem;
 }
 
+.turn-summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .turn-indicator {
   font-size: 1.2rem;
   font-weight: bold;
@@ -126,6 +133,15 @@ body {
 .turn-indicator.red { background-color: var(--red); }
 .turn-indicator.yellow { background-color: var(--yellow); color: #333; }
 .turn-indicator.blue { background-color: var(--blue); }
+
+.turn-timer {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.14);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
 
 .menu-link-button {
   padding: 10px 14px;
@@ -356,6 +372,38 @@ body {
   box-shadow: 0 16px 30px rgba(0,0,0,0.24);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.current-turn .player-profile-card {
+  border-color: rgba(76, 175, 80, 0.4);
+  box-shadow: 0 0 20px rgba(76, 175, 80, 0.2);
+}
+
+.current-turn .player-profile-card::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 22px;
+  padding: 2px;
+  background: conic-gradient(#4CAF50 var(--timer-progress, 100%), transparent 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: timer-spin 15s linear forwards;
+}
+
+@property --timer-progress {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 100%;
+}
+
+@keyframes timer-spin {
+  from { --timer-progress: 100%; }
+  to { --timer-progress: 0%; }
 }
 
 .player-profile-group.red .player-profile-card,
@@ -584,6 +632,21 @@ body {
   .ludo-container {
     gap: 14px;
     padding: 14px;
+  }
+
+  .game-info {
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  .turn-summary {
+    gap: 8px;
+  }
+
+  .turn-indicator,
+  .turn-timer {
+    font-size: 0.84rem;
+    padding: 7px 10px;
   }
 
   .player-profile-card {

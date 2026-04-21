@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { PLAYER_PATHS, SAFE_CELLS } from './constants';
 import { canMovePiece, createInitialPieces } from './utils';
 import type { MovingPiece, Piece, Team } from './types';
+
+const TURN_DURATION_SECONDS = 15;
 
 export function useLudoGame(activeTeams: Team[]) {
   const [pieces, setPieces] = useState<Piece[]>(() => createInitialPieces(activeTeams));
@@ -10,6 +12,10 @@ export function useLudoGame(activeTeams: Team[]) {
   const [rolling, setRolling] = useState(false);
   const [winners, setWinners] = useState<Team[]>([]);
   const [movingPiece, setMovingPiece] = useState<MovingPiece | null>(null);
+  const [turnTimeLeft, setTurnTimeLeft] = useState(TURN_DURATION_SECONDS);
+  const [turnTimerCycle, setTurnTimerCycle] = useState(0);
+  const turnDeadlineRef = useRef<number>(Date.now() + TURN_DURATION_SECONDS * 1000);
+  const movingPieceRef = useRef<MovingPiece | null>(null);
 
   useEffect(() => {
     setPieces(createInitialPieces(activeTeams));
@@ -18,9 +24,18 @@ export function useLudoGame(activeTeams: Team[]) {
     setRolling(false);
     setWinners([]);
     setMovingPiece(null);
+    setTurnTimeLeft(TURN_DURATION_SECONDS);
+    setTurnTimerCycle(0);
+    turnDeadlineRef.current = Date.now() + TURN_DURATION_SECONDS * 1000;
   }, [activeTeams]);
 
   const canMove = (piece: Piece, value: number) => canMovePiece(piece, value);
+
+  const restartTurnTimer = () => {
+    turnDeadlineRef.current = Date.now() + TURN_DURATION_SECONDS * 1000;
+    setTurnTimeLeft(TURN_DURATION_SECONDS);
+    setTurnTimerCycle((currentCycle) => currentCycle + 1);
+  };
 
   const nextTurn = () => {
     setDice(null);
@@ -117,10 +132,40 @@ export function useLudoGame(activeTeams: Team[]) {
       nextTurn();
     } else {
       setDice(null);
+      restartTurnTimer();
     }
   };
 
   const isGameOver = winners.length >= activeTeams.length - 1 && activeTeams.length > 1;
+
+  useEffect(() => {
+    movingPieceRef.current = movingPiece;
+  }, [movingPiece]);
+
+  useEffect(() => {
+    if (isGameOver) {
+      return;
+    }
+
+    turnDeadlineRef.current = Date.now() + TURN_DURATION_SECONDS * 1000;
+    setTurnTimeLeft(TURN_DURATION_SECONDS);
+
+    const intervalId = window.setInterval(() => {
+      if (movingPieceRef.current) {
+        return;
+      }
+
+      const secondsLeft = Math.max(0, Math.ceil((turnDeadlineRef.current - Date.now()) / 1000));
+      setTurnTimeLeft(secondsLeft);
+
+      if (secondsLeft === 0) {
+        window.clearInterval(intervalId);
+        nextTurn();
+      }
+    }, 250);
+
+    return () => window.clearInterval(intervalId);
+  }, [turn, turnTimerCycle, isGameOver]);
 
   return {
     pieces,
@@ -130,6 +175,8 @@ export function useLudoGame(activeTeams: Team[]) {
     winners,
     movingPiece,
     isGameOver,
+    turnTimeLeft,
+    turnTimerCycle,
     canMove,
     rollDice,
     movePiece,

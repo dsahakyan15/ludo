@@ -38,6 +38,7 @@ function App() {
       <GameInfo
         playerCount={playerCount}
         turn={game.turn}
+        turnTimeLeft={game.turnTimeLeft}
         winners={game.winners}
         onRestart={() => setPlayerCount(null)}
       />
@@ -45,6 +46,7 @@ function App() {
         activeTeams={activeTeams}
         pieces={game.pieces}
         turn={game.turn}
+        turnTimerCycle={game.turnTimerCycle}
         dice={game.dice}
         rolling={game.rolling}
         movingPiece={game.movingPiece}

@@ -7,6 +7,7 @@ interface GameAreaProps {
   activeTeams: Team[];
   pieces: Piece[];
   turn: Team;
+  turnTimerCycle: number;
   dice: number | null;
   rolling: boolean;
   movingPiece: MovingPiece | null;
@@ -19,6 +20,7 @@ export function GameArea({
   activeTeams,
   pieces,
   turn,
+  turnTimerCycle,
   dice,
   rolling,
   movingPiece,
@@ -34,6 +36,7 @@ export function GameArea({
           team={team}
           active={activeTeams.includes(team)}
           currentTurn={turn === team}
+          turnTimerCycle={turn === team ? turnTimerCycle : 0}
           dice={dice}
           rolling={rolling}
           onRollDice={onRollDice}
